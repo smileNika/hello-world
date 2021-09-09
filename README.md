@@ -3,9 +3,11 @@ hello-world
 
 myFirst
 
-Hi Humans!
+Hi!
 
-I`m Kate and from this time i am with you)
+I`m Kate. 7 years ago I have wrote this:  
+"and from this time i am with you
 I want to become a pro programmer, so i am waiting a good lessons!
+With love and hope Love!"
 
-With love and hope Love!
+Nothing has been done(( 
