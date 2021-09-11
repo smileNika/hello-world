@@ -1,0 +1,156 @@
+/*The code is used to move the point in the X,Y square from point to point with the different velocity
+
+Also we can count the total time used to move it from start to the end
+- total path the pointed gone
+
+But the main issue was to find the X,Y of the point in a different time_pointer*/
+
+using System;
+     
+public class Program
+{
+ public static void Main()
+ {
+  // new point obj creation
+  Point p = new Point();
+  double[] p1 = {4,7,1.5};
+  double[] p2 = {15,12,2};
+  double[] p3 = {20,4,1.0};
+  double[] p4 = {50,25,3.3};
+  double[] p5 = {30,17,1.4};
+  
+  p.AddPath(p1);
+  p.AddPath(p2);
+  p.AddPath(p3);
+  p.AddPath(p4);
+  p.AddPath(p5);
+  
+  //requested time to find the XY
+     double t=5.375;
+  
+    double [] XY = p.XYCurr(t);
+
+ // Console.WriteLine(s_between(p.XYV[0],p1)+s_between(p1,p2));
+  Console.WriteLine("Total time for a path: {0} m ", Math.Round(p.t,2));
+  Console.WriteLine("Total path is {0} sec",Math.Round(p.path,2));
+  Console.WriteLine("\nAfter {0} seconds the Point is on: \nX={1}; \nY={2}!",t,Math.Round(XY[0],2),Math.Round(XY[1],2));
+  
+}
+ 
+ public class Point
+ {
+  // array of arrays to save all the x,y,v data of the Point path
+  private double [][] xyv;
+  public double path;
+  public double t;
+  
+  // Constuctor with no args create new Point entity with x =0; y=0; path =0; t =0;
+  public Point ()
+  {
+   this.xyv = new double [][]
+   {
+    new double[] {0.0,0.0,0.0}
+   };
+   this.path =0;
+   this.t =0;
+  }
+   
+  //property for getting XYV data path
+  public double [][]XYV
+  {
+   get {return this.xyv;}
+  }
+  
+  // function for adding a new path to move the point
+  public void AddPath(double[] new_path)
+  {
+   double [][] new_xyv = new double [this.xyv.Length+1][];
+   for (int k=0; k<this.xyv.Length;k++)
+   {
+     new_xyv[k] = this.xyv[k];
+   }
+   
+   new_xyv[new_xyv.Length-1] = new_path;
+   this.xyv = new_xyv;
+   this.path = this.TotalPath();
+ this.t = this.TotalTime();
+ 
+  }
+  
+  public double TotalPath ()
+  {
+    //counting the general path
+   double path=0;
+   for (int i=0; i<this.xyv.Length-1;i++)
+   path = s_between(this.xyv[i],this.xyv[i+1]);
+     this.path += path;
+   return this.path;
+  }
+  
+    //counting the general time for going the path by the point
+  public double TotalTime ()
+  {
+   double time =0;
+    for (int i=0; i<this.xyv.Length-1;i++)
+   time = t_between(this.xyv[i],this.xyv[i+1]);
+    this.t += time;
+    return this.t;
+  }
+  
+  //func for returning the current x,y in the dirrect time in second
+ public double[] XYCurr (double t)
+ {
+  double[] xy_curr = {0,0};
+  if (t>this.t)
+   Console.WriteLine("The point has not used {0} seconds. Add one or more path and try againe! Or change t",t);
+  else if (t<=0)
+   Console.WriteLine("The requested time is not possible for this programm. Change the requeted time variable on NonZero value!");
+  else
+  {
+   double [] x1 = {0,0,0},x2 = {0,0,0};
+   double s_t, t_mov=0, t_mov_xy_zone=0, alfa=0;
+   
+   for (int i=0;i<this.XYV.Length;i++)
+   {
+    t_mov += t_between(this.XYV[i],this.XYV[i+1]);
+    if (t<t_mov)
+    {
+     x1 = this.XYV[i];
+     x2 = this.XYV[i+1];
+     t_mov_xy_zone = t_mov-t;
+     break;
+    }
+   
+   }
+   //count a value of the path point were moving during the time t
+   s_t = x1[2]*t_mov_xy_zone ;
+   alfa = Math.Atan((x2[1]-x1[1])/(x2[0]-x1[0]));
+   xy_curr [0] = x1[0]+s_t*Math.Cos(alfa);
+   xy_curr [1] = x1[1]+s_t*Math.Sin(alfa);
+  }
+  return xy_curr;
+   
+  
+ }
+ 
+ // func returns the destiny between 2 points
+  public static double s_between (double[] x1, double[] x2)
+  {
+   double s;
+   s= Math.Sqrt((Math.Pow(x2[0]-x1[0],2)+Math.Pow(x2[1]-x1[1],2)));
+  return s;
+  }
+ 
+  // func returns the time between two points, at the 0,0 point we may have the velocity =0,
+  // if that or if we forgot to set the velocity the point will move wih the same v as the previous path
+   public static double t_between (double[] x1, double[] x2)
+  {
+   double t;
+   if (x1[1]==0)
+    t = s_between(x1,x2)/ x2[2];
+	 else
+		 t = s_between(x1,x2)/ x1[2];
+	  return t;
+  }
+ }
+}
